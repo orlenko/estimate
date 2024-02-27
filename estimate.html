@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task Estimator</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+  }
+  .container {
+    max-width: 700px;
+    margin: 20px auto;
+    text-align: center;
+    padding: 15px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    background-color: #fff;
+  }
+  .estimation-form, .settings-form {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .input-group {
+    background-color: #d4edda; /* light green */
+    padding: 10px;
+    border-radius: 5px;
+  }
+  .input-group:nth-child(2) {
+    background-color: #fff3cd; /* light yellow */
+  }
+  .input-group:nth-child(3) {
+    background-color: #f8d7da; /* light pink */
+  }
+  .input-group label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  input[type='number'] {
+    /* width: 100%; */
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  #result {
+    grid-column: span 3;
+    font-size: 2em;
+    background-color: #007bff;
+    color: white;
+    padding: 20px;
+    border-radius: 5px;
+    margin: 20px 0;
+  }
+  #settingsBtn {
+    grid-column: span 3;
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+  }
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+  }
+  .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 60%;
+  }
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  /* Settings-specific styles */
+  .settings-form div {
+    padding: 0; /* Override padding for settings input groups */
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>How much work is it? (task estimator)</h2>
+  <div class="estimation-form">
+    <div class="input-group">
+      <label for="bestCase">Best case:</label>
+      <input id="bestCase" type="number" value="0" oninput="calculateEstimation()" />
+    </div>
+    <div class="input-group">
+      <label for="mostLikely">Most likely:</label>
+      <input id="mostLikely" type="number" value="0" oninput="calculateEstimation()" />
+    </div>
+    <div class="input-group">
+      <label for="worstCase">Worst case:</label>
+      <input id="worstCase" type="number" value="0" oninput="calculateEstimation()" />
+    </div>
+  </div>
+  <div id="result">0</div>
+  <button id="settingsBtn" onclick="showSettings()">Settings</button>
+</div>
+
+<div id="settingsModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="hideSettings()">&times;</span>
+    <h2>Settings</h2>
+    <div class="settings-form">
+      <div>
+        <label for="bestWeight">Best case weight:</label>
+        <input id="bestWeight" type="number" value="1" />
+      </div>
+      <div>
+        <label for="likelyWeight">Most likely weight:</label>
+        <input id="likelyWeight" type="number" value="3" />
+      </div>
+      <div>
+        <label for="worstWeight">Worst case weight:</label>
+        <input id="worstWeight" type="number" value="2" />
+      </div>
+    </div>
+    <button onclick="saveSettings()">OK</button>
+  </div>
+</div>
+
+<script>
+
+let k = 1, m = 3, n = 2;
+
+function calculateEstimation() {
+  let best = parseFloat(document.getElementById('bestCase').value) || 0;
+  let likely = parseFloat(document.getElementById('mostLikely').value) || 0;
+  let worst = parseFloat(document.getElementById('worstCase').value) || 0;
+
+  let result = (k * best + m * likely + n * worst) / (k + m + n);
+  document.getElementById('result').textContent = result.toFixed(1);
+}
+
+function showSettings() {
+  document.getElementById('settingsModal').style.display = 'block';
+}
+
+function hideSettings() {
+  document.getElementById('settingsModal').style.display = 'none';
+}
+
+function saveSettings() {
+  k = parseFloat(document.getElementById('bestWeight').value) || k;
+  m = parseFloat(document.getElementById('likelyWeight').value) || m;
+  n = parseFloat(document.getElementById('worstWeight').value) || n;
+  hideSettings();
+  calculateEstimation(); // Recalculate with new weights
+}
+</script>
+
+</body>
+</html>
