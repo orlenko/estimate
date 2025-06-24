@@ -148,7 +148,8 @@ function calculateEstimation() {
   let likely = parseFloat(document.getElementById('mostLikely').value) || 0;
   let worst = parseFloat(document.getElementById('worstCase').value) || 0;
 
-  let result = (k * best + m * likely + n * worst) / (k + m + n);
+  let denominator = k + m + n;
+  let result = denominator ? (k * best + m * likely + n * worst) / denominator : 0;
   document.getElementById('result').textContent = result.toFixed(1);
 }
 
